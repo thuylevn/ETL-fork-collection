@@ -1,0 +1,29 @@
+#!/bin/bash
+# hooks/build
+# https://docs.docker.com/docker-cloud/builds/advanced/
+# this file is from https://github.com/jnovack/dockerhub-hooks
+
+# $IMAGE_NAME var is injected into the build so the tag is correct.
+echo "[***] Build hook running"
+echo "Docker Tag: $DOCKER_TAG"
+
+echo "Flavour 1: $FLAVOUR"
+if [[ -z "${FLAVOUR}" ]]; then
+    FLAVOUR=`echo ${DOCKER_TAG} | awk -F'-' '{print $2}' | awk -F'.' '{print $2}'`
+fi
+echo "Flavour 2: $FLAVOUR"
+
+if [[ -z "${UPSTREAM_VERSION}" ]]; then
+    UPSTREAM_VERSION=`echo ${DOCKER_TAG} | awk -F'-' '{print $1}' | sed 's/latest//'`
+fi
+echo "Upstream version: $UPSTREAM_VERSION"
+
+docker build \
+    --build-arg BUILD_RFC3339='"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"' \
+    --build-arg COMMIT=$(git rev-parse --short HEAD) \
+    --build-arg VERSION=$(git describe --tags --always) \
+    --build-arg UPSTREAM_VERSION=${UPSTREAM_VERSION:-0.8.0} \
+    --build-arg 'MIRROR='"${MIRROR:-https://archive.apache.org/dist}"'' \
+    --target ${FLAVOUR:-defaultuser} \
+    -f $DOCKERFILE_PATH \
+    -t $DOCKER_REPO:$DOCKER_TAG .

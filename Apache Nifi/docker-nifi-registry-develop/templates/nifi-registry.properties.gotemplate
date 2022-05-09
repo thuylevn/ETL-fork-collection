@@ -1,0 +1,146 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# web properties #
+nifi.registry.web.war.directory={{ default .Env.NIFI_REGISTRY_WEB_WAR_DIRECTORY "./lib" }}
+nifi.registry.web.http.host={{ default .Env.NIFI_REGISTRY_WEB_HTTP_HOST "" }}
+nifi.registry.web.http.port={{ default .Env.NIFI_REGISTRY_WEB_HTTP_PORT "18080" }}
+nifi.registry.web.https.host={{ default .Env.NIFI_REGISTRY_WEB_HTTPS_HOST "" }}
+nifi.registry.web.https.port={{ default .Env.NIFI_REGISTRY_WEB_HTTPS_PORT "" }}
+nifi.registry.web.jetty.working.directory={{ default .Env.NIFI_REGISTRY_WEB_JETTY_WORKING_DIRECTORY "./work/jetty" }}
+nifi.registry.web.jetty.threads={{ default .Env.NIFI_REGISTRY_WEB_JETTY_THREADS "200" }}
+nifi.registry.web.should.send.server.version={{ default .Env.NIFI_REGISTRY_WEB_SHOULD_SEND_SERVER_VERSION "true" }}
+
+# security properties #
+nifi.registry.security.keystore={{ default .Env.NIFI_REGISTRY_SECURITY_KEYSTORE "" }}
+nifi.registry.security.keystoreType={{ default .Env.NIFI_REGISTRY_SECURITY_KEYSTOREtYPE "" }}
+nifi.registry.security.keystorePasswd={{ default .Env.NIFI_REGISTRY_SECURITY_KEYSTOREpASSWD "" }}
+nifi.registry.security.keyPasswd={{ default .Env.NIFI_REGISTRY_SECURITY_KEYpASSWD "" }}
+nifi.registry.security.truststore={{ default .Env.NIFI_REGISTRY_SECURITY_TRUSTSTORE "" }}
+nifi.registry.security.truststoreType={{ default .Env.NIFI_REGISTRY_SECURITY_TRUSTSTOREtYPE "" }}
+nifi.registry.security.truststorePasswd={{ default .Env.NIFI_REGISTRY_SECURITY_TRUSTSTOREpASSWD "" }}
+nifi.registry.security.needClientAuth={{ default .Env.NIFI_REGISTRY_SECURITY_NEEDcLIENTaUTH "" }}
+nifi.registry.security.authorizers.configuration.file={{ default .Env.NIFI_REGISTRY_SECURITY_AUTHORIZERS_CONFIGURATION_FILE "./conf/authorizers.xml" }}
+nifi.registry.security.authorizer={{ default .Env.NIFI_REGISTRY_SECURITY_AUTHORIZER "managed-authorizer" }}
+nifi.registry.security.identity.providers.configuration.file={{ default .Env.NIFI_REGISTRY_SECURITY_IDENTITY_PROVIDERS_CONFIGURATION_FILE "./conf/identity-providers.xml" }}
+nifi.registry.security.identity.provider={{ default .Env.NIFI_REGISTRY_SECURITY_IDENTITY_PROVIDER "" }}
+
+# sensitive property protection properties #
+# nifi.registry.sensitive.props.additional.keys=
+
+# providers properties #
+nifi.registry.providers.configuration.file={{ default .Env.NIFI_REGISTRY_PROVIDERS_CONFIGURATION_FILE "./conf/providers.xml" }}
+
+# registry alias properties #
+nifi.registry.registry.alias.configuration.file={{ default .Env.NIFI_REGISTRY_REGISTRY_ALIAS_CONFIGURATION_FILE "./conf/registry-aliases.xml" }}
+
+# extensions working dir #
+nifi.registry.extensions.working.directory={{ default .Env.NIFI_REGISTRY_EXTENSIONS_WORKING_DIRECTORY "./work/extensions" }}
+
+# legacy database properties, used to migrate data from original DB to new DB below
+# NOTE: Users upgrading from 0.1.0 should leave these populated, but new installs after 0.1.0 should leave these empty
+nifi.registry.db.directory={{ default .Env.NIFI_REGISTRY_DB_DIRECTORY "" }}
+nifi.registry.db.url.append={{ default .Env.NIFI_REGISTRY_DB_URL_APPEND "" }}
+
+# database properties
+nifi.registry.db.url={{ default .Env.NIFI_REGISTRY_DB_URL "jdbc:h2:./database/nifi-registry-primary;AUTOCOMMIT=OFF;DB_CLOSE_ON_EXIT=FALSE;LOCK_MODE=3;LOCK_TIMEOUT=25000;WRITE_DELAY=0;AUTO_SERVER=FALSE" }}
+nifi.registry.db.driver.class={{ default .Env.NIFI_REGISTRY_DB_DRIVER_CLASS "org.h2.Driver" }}
+nifi.registry.db.driver.directory={{ default .Env.NIFI_REGISTRY_DB_DRIVER_DIRECTORY "" }}
+nifi.registry.db.username={{ default .Env.NIFI_REGISTRY_DB_USERNAME "nifireg" }}
+nifi.registry.db.password={{ default .Env.NIFI_REGISTRY_DB_PASSWORD "nifireg" }}
+nifi.registry.db.maxConnections={{ default .Env.NIFI_REGISTRY_DB_MAXcONNECTIONS "5" }}
+nifi.registry.db.sql.debug={{ default .Env.NIFI_REGISTRY_DB_SQL_DEBUG "false" }}
+
+# extension directories #
+# Each property beginning with "nifi.registry.extension.dir." will be treated as location for an extension,
+# and a class loader will be created for each location, with the system class loader as the parent
+#
+#nifi.registry.extension.dir.1=/path/to/extension1
+{{ if .Env.NIFI_REGISTRY_EXTENSION_DIR_1 -}}
+nifi.registry.extension.dir.1={{ .Env.NIFI_REGISTRY_EXTENSION_DIR_1 }}
+{{- end }}
+#nifi.registry.extension.dir.2=/path/to/extension2
+{{ if .Env.NIFI_REGISTRY_EXTENSION_DIR_2 -}}
+nifi.registry.extension.dir.2={{ .Env.NIFI_REGISTRY_EXTENSION_DIR_2 }}
+{{- end }}
+
+nifi.registry.extension.dir.aws={{ default .Env.NIFI_REGISTRY_EXTENSION_DIR_AWS "./ext/aws/lib" }}
+
+# Identity Mapping Properties #
+# These properties allow normalizing user identities such that identities coming from different identity providers
+# (certificates, LDAP, Kerberos) can be treated the same internally in NiFi. The following example demonstrates normalizing
+# DNs from certificates and principals from Kerberos into a common identity string:
+#
+#nifi.registry.security.identity.mapping.pattern.dn=^CN=(.*?), OU=(.*?), O=(.*?), L=(.*?), ST=(.*?), C=(.*?)$
+{{ if .Env.NIFI_REGISTRY_SECURITY_IDENTITY_MAPPING_PATTERN_DN -}}
+nifi.registry.security.identity.mapping.pattern.dn={{ .Env.NIFI_REGISTRY_SECURITY_IDENTITY_MAPPING_PATTERN_DN }}
+{{- end }}
+#nifi.registry.security.identity.mapping.value.dn=$1@$2
+{{ if .Env.NIFI_REGISTRY_SECURITY_IDENTITY_MAPPING_VALUE_DN -}}
+nifi.registry.security.identity.mapping.value.dn={{ .Env.NIFI_REGISTRY_SECURITY_IDENTITY_MAPPING_VALUE_DN }}
+{{- end }}
+#nifi.registry.security.identity.mapping.transform.dn=NONE
+{{ if .Env.NIFI_REGISTRY_SECURITY_IDENTITY_MAPPING_TRANSFORM_DN -}}
+nifi.registry.security.identity.mapping.transform.dn={{ .Env.NIFI_REGISTRY_SECURITY_IDENTITY_MAPPING_TRANSFORM_DN }}
+{{- end }}
+
+#nifi.registry.security.identity.mapping.pattern.kerb=^(.*?)/instance@(.*?)$
+{{ if .Env.NIFI_REGISTRY_SECURITY_IDENTITY_MAPPING_PATTERN_KERB -}}
+nifi.registry.security.identity.mapping.pattern.kerb={{ .Env.NIFI_REGISTRY_SECURITY_IDENTITY_MAPPING_PATTERN_KERB }}
+{{- end }}
+#nifi.registry.security.identity.mapping.value.kerb=$1@$2
+{{ if .Env.NIFI_REGISTRY_SECURITY_IDENTITY_MAPPING_VALUE_KERB -}}
+nifi.registry.security.identity.mapping.value.kerb={{ .Env.NIFI_REGISTRY_SECURITY_IDENTITY_MAPPING_VALUE_KERB }}
+{{- end }}
+#nifi.registry.security.identity.mapping.transform.kerb=UPPER
+{{ if .Env.NIFI_REGISTRY_SECURITY_IDENTITY_MAPPING_TRANSFORM_KERB -}}
+nifi.registry.security.identity.mapping.transform.kerb={{ .Env.NIFI_REGISTRY_SECURITY_IDENTITY_MAPPING_TRANSFORM_KERB }}
+{{- end }}
+
+# Group Mapping Properties #
+# These properties allow normalizing group names coming from external sources like LDAP. The following example
+# lowercases any group name.
+#
+#nifi.registry.security.group.mapping.pattern.anygroup=^(.*)$
+{{ if .Env.NIFI_REGISTRY_SECURITY_GROUP_MAPPING_PATTERN_ANYGROUP -}}
+nifi.registry.security.group.mapping.pattern.anygroup={{ .Env.NIFI_REGISTRY_SECURITY_GROUP_MAPPING_PATTERN_ANYGROUP }}
+{{- end }}
+#nifi.registry.security.group.mapping.value.anygroup=$1
+{{ if .Env.NIFI_REGISTRY_SECURITY_GROUP_MAPPING_VALUE_ANYGROUP -}}
+nifi.registry.security.group.mapping.value.anygroup={{ .Env.NIFI_REGISTRY_SECURITY_GROUP_MAPPING_VALUE_ANYGROUP }}
+{{- end }}
+#nifi.registry.security.group.mapping.transform.anygroup=LOWER
+{{ if .Env.NIFI_REGISTRY_SECURITY_GROUP_MAPPING_TRANSFORM_ANYGROUP -}}
+nifi.registry.security.group.mapping.transform.anygroup={{ .Env.NIFI_REGISTRY_SECURITY_GROUP_MAPPING_TRANSFORM_ANYGROUP }}
+{{- end }}
+
+
+# kerberos properties #
+nifi.registry.kerberos.krb5.file={{ default .Env.NIFI_REGISTRY_KERBEROS_KRB5_FILE "" }}
+nifi.registry.kerberos.spnego.principal={{ default .Env.NIFI_REGISTRY_KERBEROS_SPNEGO_PRINCIPAL "" }}
+nifi.registry.kerberos.spnego.keytab.location={{ default .Env.NIFI_REGISTRY_KERBEROS_SPNEGO_KEYTAB_LOCATION "" }}
+nifi.registry.kerberos.spnego.authentication.expiration={{ default .Env.NIFI_REGISTRY_KERBEROS_SPNEGO_AUTHENTICATION_EXPIRATION "12 hours" }}
+
+# OIDC #
+nifi.registry.security.user.oidc.discovery.url={{ default .Env.NIFI_REGISTRY_SECURITY_USER_OIDC_DISCOVERY_URL "" }}
+nifi.registry.security.user.oidc.connect.timeout={{ default .Env.NIFI_REGISTRY_SECURITY_USER_OIDC_CONNECT_TIMEOUT "" }}
+nifi.registry.security.user.oidc.read.timeout={{ default .Env.NIFI_REGISTRY_SECURITY_USER_OIDC_READ_TIMEOUT "" }}
+nifi.registry.security.user.oidc.client.id={{ default .Env.NIFI_REGISTRY_SECURITY_USER_OIDC_CLIENT_ID "" }}
+nifi.registry.security.user.oidc.client.secret={{ default .Env.NIFI_REGISTRY_SECURITY_USER_OIDC_CLIENT_SECRET "" }}
+nifi.registry.security.user.oidc.preferred.jwsalgorithm={{ default .Env.NIFI_REGISTRY_SECURITY_USER_OIDC_PREFERRED_JWSALGORITHM "" }}
+
+# revision management #
+# This feature should remain disabled until a future NiFi release that supports the revision API changes
+nifi.registry.revisions.enabled={{ default .Env.NIFI_REGISTRY_REVISIONS_ENABLED "false" }}
