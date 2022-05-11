@@ -1,0 +1,28 @@
+# Dependencies are set at the lowest currently tested version
+# If you need an older version of a dependency please open an Issue on Github
+# Basics
+setuptools>=38.5
+six>=1.11.0
+future>=0.18.2
+
+# Version comparison
+packaging>=17.1
+
+# Templates management implementation
+lxml>=4.6.2
+
+# Security and Connectivity
+requests[security]>=2.18
+# urllib3, cryptography are handled by requests
+
+# Socks Proxy
+pysocks>=1.7.1
+
+# Import Export and Utils implementation
+ruamel.yaml<=0.18
+
+# Demo deployment automation
+docker>=2.5.1
+
+# xml to json parsing
+xmltodict>=0.12.0
